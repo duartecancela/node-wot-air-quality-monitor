@@ -16,80 +16,67 @@ servient.start().then((WoT) => {
     WoT.consume(td).then((thing) => {
         console.log(`Consumed Thing: ${thing.title}`);
 
-        // Subscribe to temperature updates
-        thing.observeProperty("temperature", async (data) => {
+        // Observe each sensor property
+        ["temperature", "humidity", "co2", "noise"].forEach((prop) => {
+            thing.observeProperty(prop, async (data) => {
+                try {
+                    const payload = await data.value();
+                    const value = typeof payload.value === "number" ? payload.value : null;
+                    console.log(`${prop[0].toUpperCase() + prop.slice(1)}:`, value);
+                } catch (err) {
+                    console.error(`Failed to read ${prop}:`, err);
+                }
+            });
+        });
+
+        // Observe fan and buzzer states
+        ["fan", "buzzer"].forEach((prop) => {
+            thing.observeProperty(prop, async (data) => {
+                try {
+                    const payload = await data.value();
+                    const state = typeof payload.state === "string" ? payload.state : null;
+                    console.log(`${prop[0].toUpperCase() + prop.slice(1)} state:`, state);
+                } catch (err) {
+                    console.error(`Failed to read ${prop} state:`, err);
+                }
+            });
+        });
+
+        // Observe LED states
+        thing.observeProperty("ledStates", async (data) => {
             try {
-                const payload = await data.value();
-                const value = typeof payload.value === "number" ? payload.value : null;
-                console.log("Temperature:", value); // Handles null safely
+                const states = await data.value();
+                console.log("LED States:", states);
             } catch (err) {
-                console.error("Failed to read temperature:", err);
+                console.error("Failed to read LED states:", err);
             }
         });
 
-        // Subscribe to humidity updates
-        thing.observeProperty("humidity", async (data) => {
+        // Observe current thresholds
+        thing.observeProperty("thresholds", async (data) => {
             try {
-                const payload = await data.value();
-                const value = typeof payload.value === "number" ? payload.value : null;
-                console.log("Humidity:", value);
+                const values = await data.value();
+                console.log("Thresholds:", values);
             } catch (err) {
-                console.error("Failed to read humidity:", err);
+                console.error("Failed to read thresholds:", err);
             }
         });
 
-        // Subscribe to CO₂ updates
-        thing.observeProperty("co2", async (data) => {
-            try {
-                const payload = await data.value();
-                const value = typeof payload.value === "number" ? payload.value : null;
-                console.log("CO₂:", value);
-            } catch (err) {
-                console.error("Failed to read CO₂:", err);
-            }
-        });
+        // Set thresholds for each parameter (example values)
+        thing.invokeAction("setTemperatureLimit", {}, { uriVariables: { value: 29.5 } })
+            .then(() => console.log("Set temperature threshold"))
+            .catch((err) => console.error("Error setting temperature threshold:", err));
 
-        // Subscribe to noise updates
-        thing.observeProperty("noise", async (data) => {
-            try {
-                const payload = await data.value();
-                const value = typeof payload.value === "number" ? payload.value : null;
-                console.log("Noise:", value);
-            } catch (err) {
-                console.error("Failed to read noise:", err);
-            }
-        });
+        thing.invokeAction("setHumidityLimit", {}, { uriVariables: { value: 55 } })
+            .then(() => console.log("Set humidity threshold"))
+            .catch((err) => console.error("Error setting humidity threshold:", err));
 
-        // Subscribe to fan state
-        thing.observeProperty("fan", async (data) => {
-            try {
-                const payload = await data.value();
-                const state = typeof payload.state === "string" ? payload.state : null;
-                console.log("Fan state:", state);
-            } catch (err) {
-                console.error("Failed to read fan state:", err);
-            }
-        });
+        thing.invokeAction("setCo2Limit", {}, { uriVariables: { value: 850 } })
+            .then(() => console.log("Set CO2 threshold"))
+            .catch((err) => console.error("Error setting CO2 threshold:", err));
 
-        // Subscribe to buzzer state
-        thing.observeProperty("buzzer", async (data) => {
-            try {
-                const payload = await data.value();
-                const state = typeof payload.state === "string" ? payload.state : null;
-                console.log("Buzzer state:", state);
-            } catch (err) {
-                console.error("Failed to read buzzer state:", err);
-            }
-        });
-
-        // Turn fan ON
-        thing.invokeAction("setFanState", { state: "ON" })
-            .then(() => console.log("Fan ON command sent"))
-            .catch((err) => console.error("Error sending fan command:", err));
-
-        // Turn buzzer OFF
-        thing.invokeAction("setBuzzerState", { state: "OFF" })
-            .then(() => console.log("Buzzer OFF command sent"))
-            .catch((err) => console.error("Error sending buzzer command:", err));
+        thing.invokeAction("setNoiseLimit", {}, { uriVariables: { value: 75 } })
+            .then(() => console.log("Set noise threshold"))
+            .catch((err) => console.error("Error setting noise threshold:", err));
     });
 });
