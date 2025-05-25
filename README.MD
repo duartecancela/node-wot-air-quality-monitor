@@ -5,10 +5,10 @@ A Web of Things (WoT) project to monitor air quality and control actuators using
 
 - **Node-WoT** to consume and interact with Things via Thing Descriptions (TD)
 - **MQTT** for communication between simulated ESP32 and WoT Servient
+- **Express.js** API to expose sensor data and control actuators via HTTP
 - **Thing Description** includes multiple properties and actions
 - **Actuators (Fan, Buzzer)** controlled via MQTT actions
 - **Sensor data** received via MQTT topics and displayed in real-time
-- **No security** applied yet – development phase
 
 ## ✅ Current Features
 
@@ -16,18 +16,19 @@ A Web of Things (WoT) project to monitor air quality and control actuators using
   - Sensors: temperature, humidity, CO₂, noise
   - Actuators: fan and buzzer (state + control)
 - Thing Description (`thing-description.json`) modeled according to W3C WoT
-- Node-WoT Servient (`wot-servient.js`) receives and logs all sensor data
-- Support for `invokeAction()` to control actuators
+- Node-WoT Servient (`server.js`) observes and logs all sensor data
+- Support for `invokeAction()` to control actuators (via WoT + API)
 - Functional ESP32 Python simulator provided
+- REST API to query sensor data and control actuators
 - Git repository properly initialized and ready for collaboration
 
 ## 📁 Folder Structure
 
 ```
 node-wot-air-quality-monitor/
-├── backend/               # Node.js with Node-WoT
+├── backend/               # Node.js with Node-WoT + Express
 │   ├── server.js
-│   ├── wot-servient.js
+│   ├── wot-servient.js (optional legacy)
 │   └── package.json
 ├── frontend/              # React frontend (to be developed)
 │   ├── public/
@@ -45,7 +46,7 @@ node-wot-air-quality-monitor/
 1. Install backend dependencies:
    ```bash
    cd backend
-   npm install @node-wot/core @node-wot/binding-mqtt
+   npm install express body-parser @node-wot/core @node-wot/binding-mqtt
    ```
 
 2. Start your MQTT broker (e.g. Mosquitto):
@@ -58,23 +59,41 @@ node-wot-air-quality-monitor/
    python esp32_simulator.py
    ```
 
-4. Run the Node-WoT Servient:
+4. Run the Node-WoT API server:
    ```bash
-   node backend/wot-servient.js
+   node backend/server.js
    ```
 
-5. Optional – Send manual commands via MQTT:
-   ```bash
-   mosquitto_pub -t actuator/fan -m '{"state": "ON"}'
-   mosquitto_pub -t actuator/buzzer -m '{"state": "OFF"}'
-   ```
+5. Test the API endpoints:
+
+### Read sensor data:
+
+```bash
+curl http://localhost:3000/temperature
+curl http://localhost:3000/humidity
+curl http://localhost:3000/co2
+curl http://localhost:3000/noise
+```
+
+### Get actuator states:
+
+```bash
+curl http://localhost:3000/fan
+curl http://localhost:3000/buzzer
+```
+
+### Control actuators:
+
+```bash
+curl -X POST http://localhost:3000/fan -H "Content-Type: application/json" -d '{"state":"ON"}'
+curl -X POST http://localhost:3000/buzzer -H "Content-Type: application/json" -d '{"state":"OFF"}'
+```
 
 ## 🗺️ Next Steps
 
-- Expose latest values via HTTP using Express API
-- Add React frontend dashboard to control and view data
-- Add MongoDB integration to persist history
-- Add security layer for remote access
+- Add React frontend dashboard to view and control data
+- Add MongoDB to persist sensor history
+- Add user authentication and security layer
 
 ## 📝 License
 
