@@ -18,7 +18,6 @@ let lastReadings = {
     buzzer: null
 };
 
-// Initialize WoT Servient and consume Thing
 const servient = new Servient();
 servient.addClientFactory(new MqttClientFactory());
 
@@ -28,18 +27,31 @@ servient.start().then(WoT => {
         thing = t;
         console.log("Consumed Thing:", thing.title);
 
-        // Observers for each property
-        ["temperature", "humidity", "co2", "noise", "fan", "buzzer"].forEach(prop => {
+        // Robust data observation with null fallback
+        const observeAndStore = (prop, field = "value") => {
             thing.observeProperty(prop, async (data) => {
-                const payload = await data.value();
-                lastReadings[prop] = payload.value || payload.state || payload;
-                console.log(`[OBSERVED] ${prop}:`, lastReadings[prop]);
+                try {
+                    const payload = await data.value();
+                    const extracted = payload[field];
+                    lastReadings[prop] = typeof extracted === "number" || typeof extracted === "string" ? extracted : null;
+                    console.log(`[OBSERVED] ${prop}:`, lastReadings[prop]);
+                } catch (err) {
+                    console.error(`[ERROR] Failed to read ${prop}:`, err);
+                    lastReadings[prop] = null;
+                }
             });
-        });
+        };
+
+        observeAndStore("temperature");
+        observeAndStore("humidity");
+        observeAndStore("co2");
+        observeAndStore("noise");
+        observeAndStore("fan", "state");
+        observeAndStore("buzzer", "state");
     });
 });
 
-// GET endpoints to retrieve last values
+// GET endpoint to retrieve last values
 app.get("/:property", (req, res) => {
     const prop = req.params.property;
     if (lastReadings.hasOwnProperty(prop)) {
@@ -49,7 +61,7 @@ app.get("/:property", (req, res) => {
     }
 });
 
-// POST endpoint to control fan or buzzer
+// POST endpoint to control actuators
 app.post("/:actuator", (req, res) => {
     const actuator = req.params.actuator;
     const { state } = req.body;
@@ -75,7 +87,6 @@ app.post("/:actuator", (req, res) => {
         });
 });
 
-// Start HTTP server
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`API server listening at http://localhost:${PORT}`);

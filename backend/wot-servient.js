@@ -1,3 +1,4 @@
+
 // Import required WoT libraries
 const { Servient } = require("@node-wot/core");
 const MqttClientFactory = require("@node-wot/binding-mqtt").MqttClientFactory;
@@ -19,7 +20,8 @@ servient.start().then((WoT) => {
         thing.observeProperty("temperature", async (data) => {
             try {
                 const payload = await data.value();
-                console.log("Temperature:", payload.value); // Extracts value from JSON
+                const value = typeof payload.value === "number" ? payload.value : null;
+                console.log("Temperature:", value); // Handles null safely
             } catch (err) {
                 console.error("Failed to read temperature:", err);
             }
@@ -29,7 +31,8 @@ servient.start().then((WoT) => {
         thing.observeProperty("humidity", async (data) => {
             try {
                 const payload = await data.value();
-                console.log("Humidity:", payload.value);
+                const value = typeof payload.value === "number" ? payload.value : null;
+                console.log("Humidity:", value);
             } catch (err) {
                 console.error("Failed to read humidity:", err);
             }
@@ -39,7 +42,8 @@ servient.start().then((WoT) => {
         thing.observeProperty("co2", async (data) => {
             try {
                 const payload = await data.value();
-                console.log("CO₂:", payload.value);
+                const value = typeof payload.value === "number" ? payload.value : null;
+                console.log("CO₂:", value);
             } catch (err) {
                 console.error("Failed to read CO₂:", err);
             }
@@ -49,7 +53,8 @@ servient.start().then((WoT) => {
         thing.observeProperty("noise", async (data) => {
             try {
                 const payload = await data.value();
-                console.log("Noise:", payload.value);
+                const value = typeof payload.value === "number" ? payload.value : null;
+                console.log("Noise:", value);
             } catch (err) {
                 console.error("Failed to read noise:", err);
             }
@@ -59,7 +64,8 @@ servient.start().then((WoT) => {
         thing.observeProperty("fan", async (data) => {
             try {
                 const payload = await data.value();
-                console.log("Fan state:", payload.state);
+                const state = typeof payload.state === "string" ? payload.state : null;
+                console.log("Fan state:", state);
             } catch (err) {
                 console.error("Failed to read fan state:", err);
             }
@@ -69,7 +75,8 @@ servient.start().then((WoT) => {
         thing.observeProperty("buzzer", async (data) => {
             try {
                 const payload = await data.value();
-                console.log("Buzzer state:", payload.state);
+                const state = typeof payload.state === "string" ? payload.state : null;
+                console.log("Buzzer state:", state);
             } catch (err) {
                 console.error("Failed to read buzzer state:", err);
             }
@@ -84,7 +91,5 @@ servient.start().then((WoT) => {
         thing.invokeAction("setBuzzerState", { state: "OFF" })
             .then(() => console.log("Buzzer OFF command sent"))
             .catch((err) => console.error("Error sending buzzer command:", err));
-
-
     });
 });
