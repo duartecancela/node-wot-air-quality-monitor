@@ -1,0 +1,157 @@
+{
+  "@context": ["https://www.w3.org/2019/wot/td/v1"],
+  "title": "AirQualitySensor",
+  "id": "urn:dev:ops:air-quality-monitor",
+  "security": "nosec_sc",
+  "securityDefinitions": {
+    "nosec_sc": {
+      "scheme": "nosec"
+    }
+  },
+  "properties": {
+    "temperature": {
+      "type": "object",
+      "description": "Current temperature in °C",
+      "readOnly": true,
+      "observable": true,
+      "properties": {
+        "value": { "type": "number" }
+      },
+      "forms": [
+        {
+          "href": "mqtt://localhost:1883/sensors/temperature",
+          "contentType": "application/json",
+          "op": ["observeproperty"],
+          "mqv:controlPacketValue": 3
+        }
+      ]
+    },
+    "humidity": {
+      "type": "object",
+      "description": "Current humidity in %",
+      "readOnly": true,
+      "observable": true,
+      "properties": {
+        "value": { "type": "number" }
+      },
+      "forms": [
+        {
+          "href": "mqtt://localhost:1883/sensors/humidity",
+          "contentType": "application/json",
+          "op": ["observeproperty"],
+          "mqv:controlPacketValue": 3
+        }
+      ]
+    },
+    "co2": {
+      "type": "object",
+      "description": "CO₂ level in ppm",
+      "readOnly": true,
+      "observable": true,
+      "properties": {
+        "value": { "type": "number" }
+      },
+      "forms": [
+        {
+          "href": "mqtt://localhost:1883/sensors/co2",
+          "contentType": "application/json",
+          "op": ["observeproperty"],
+          "mqv:controlPacketValue": 3
+        }
+      ]
+    },
+    "noise": {
+      "type": "object",
+      "description": "Noise level in dB",
+      "readOnly": true,
+      "observable": true,
+      "properties": {
+        "value": { "type": "number" }
+      },
+      "forms": [
+        {
+          "href": "mqtt://localhost:1883/sensors/noise",
+          "contentType": "application/json",
+          "op": ["observeproperty"],
+          "mqv:controlPacketValue": 3
+        }
+      ]
+    },
+    "fan": {
+      "type": "object",
+      "description": "Current fan state (ON/OFF)",
+      "readOnly": true,
+      "observable": true,
+      "properties": {
+        "state": { "type": "string" }
+      },
+      "forms": [
+        {
+          "href": "mqtt://localhost:1883/status/fan",
+          "contentType": "application/json",
+          "op": ["observeproperty"],
+          "mqv:controlPacketValue": 3
+        }
+      ]
+    },
+    "buzzer": {
+      "type": "object",
+      "description": "Current buzzer state (ON/OFF)",
+      "readOnly": true,
+      "observable": true,
+      "properties": {
+        "state": { "type": "string" }
+      },
+      "forms": [
+        {
+          "href": "mqtt://localhost:1883/status/buzzer",
+          "contentType": "application/json",
+          "op": ["observeproperty"],
+          "mqv:controlPacketValue": 3
+        }
+      ]
+    }
+  },
+  "actions": {
+    "setFanState": {
+      "title": "Set Fan State",
+      "input": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": ["ON", "OFF"]
+          }
+        }
+      },
+      "forms": [
+        {
+          "href": "mqtt://localhost:1883/actuator/fan",
+          "contentType": "application/json",
+          "op": ["invokeaction"],
+          "mqv:controlPacketValue": 2
+        }
+      ]
+    },
+    "setBuzzerState": {
+      "title": "Set Buzzer State",
+      "input": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": ["ON", "OFF"]
+          }
+        }
+      },
+      "forms": [
+        {
+          "href": "mqtt://localhost:1883/actuator/buzzer",
+          "contentType": "application/json",
+          "op": ["invokeaction"],
+          "mqv:controlPacketValue": 2
+        }
+      ]
+    }
+  }
+}
