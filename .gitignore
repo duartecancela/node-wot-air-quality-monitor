@@ -16,3 +16,7 @@ frontend/package-lock.json
 
 # VSCode settings (opcional)
 .vscode/
+
+# ESP32 Simulator env
+simulator/venv/
+
