@@ -18,27 +18,26 @@ A Web of Things (WoT) project to monitor air quality and control actuators using
   - Thresholds: configurable max values for each parameter
   - Actuators: fan and buzzer (state + control)
   - LED states: per parameter (temperature, humidity, co2, noise)
-- Thing Description (`thing-description.json`) modeled according to W3C WoT
-- Node-WoT Servient (`wot-servient.js`) for real-time observation and testing
-- Express API server (`server_full.js`) exposing all data via REST
-- Functional ESP32 Python simulator with adjustable thresholds and logic
-- Endpoints for full WoT interaction (observe, invokeAction, get, post)
+- Thing Description (`thing-description.json`) modeled according to W3C WoT using `input` with JSON payloads
+- Express API server (`server.js`) with WoT integration and in-memory history
+- ESP32 Python simulator fully compatible with WoT `input` actions
+- `tests_full.js` to validate all actions via Node-WoT programmatically
 
 ## 📁 Folder Structure
 
 ```
 node-wot-air-quality-monitor/
 ├── backend/
-│   ├── server_full.js             # Full Express API with WoT integration
-│   ├── wot-servient.js            # Node-WoT test runner
+│   ├── server.js                 # Express API with WoT integration
+│   ├── tests_full.js             # Node-WoT actions test runner
 │   └── package.json
-├── frontend/                      # React frontend (to be developed)
+├── frontend/                     # React frontend (to be developed)
 │   ├── public/
 │   ├── src/
 │   └── package.json
 ├── things/
-│   └── thing-description.json     # WoT Thing Description file
-├── esp32_simulator.py             # Python-based MQTT simulator for ESP32
+│   └── thing-description.json    # WoT Thing Description file
+├── esp32_simulator.py            # Python-based MQTT simulator for ESP32
 ├── .gitignore
 ├── README.md
 ```
@@ -61,14 +60,14 @@ node-wot-air-quality-monitor/
    python esp32_simulator.py
    ```
 
-4. Run the Node-WoT test script (optional):
+4. Run the Express API server:
    ```bash
-   node backend/wot-servient.js
+   node backend/server.js
    ```
 
-5. Run the Express API server:
+5. (Optional) Run test script to trigger actions:
    ```bash
-   node backend/server_full.js
+   node backend/tests_full.js
    ```
 
 ## 🔍 Test the Express API
@@ -101,8 +100,15 @@ curl -X POST http://localhost:3000/buzzer -H "Content-Type: application/json" -d
 
 ### Update parameter thresholds:
 ```bash
-curl -X POST http://localhost:3000/thresholds/co2 -H "Content-Type: application/json" -d '{"value":950}'
 curl -X POST http://localhost:3000/thresholds/temperature -H "Content-Type: application/json" -d '{"value":29.5}'
+curl -X POST http://localhost:3000/thresholds/humidity -H "Content-Type: application/json" -d '{"value":55}'
+curl -X POST http://localhost:3000/thresholds/co2 -H "Content-Type: application/json" -d '{"value":900}'
+curl -X POST http://localhost:3000/thresholds/noise -H "Content-Type: application/json" -d '{"value":80}'
+```
+
+### Get full sensor history (in-memory):
+```bash
+curl http://localhost:3000/history
 ```
 
 ## 🗺️ Next Steps

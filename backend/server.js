@@ -86,6 +86,10 @@ function logSensorSnapshot() {
     sensorHistory.push(snapshot);
 }
 
+app.get("/history", (req, res) => {
+    res.json(sensorHistory);
+});
+
 app.get("/:property", (req, res) => {
     const prop = req.params.property;
     if (lastReadings.hasOwnProperty(prop)) {
@@ -93,10 +97,6 @@ app.get("/:property", (req, res) => {
     } else {
         res.status(404).json({ error: "Property not found" });
     }
-});
-
-app.get("/history", (req, res) => {
-    res.json(sensorHistory);
 });
 
 app.post("/:actuator", (req, res) => {
