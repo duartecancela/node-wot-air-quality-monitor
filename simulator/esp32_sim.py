@@ -113,7 +113,7 @@ try:
 
         print(f"[STATES] Fan: {fan_state} | Buzzer: {buzzer_state}")
         print("----------------------------------------------------------")
-        time.sleep(3)
+        time.sleep(5)
 
 except KeyboardInterrupt:
     print("Shutting down simulator...")
