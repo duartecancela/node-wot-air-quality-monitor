@@ -2,7 +2,7 @@
   "@context": [
     "https://www.w3.org/2019/wot/td/v1"
   ],
-  "title": "AirQualitySensor",
+  "title": "AirQualityMonitor",
   "id": "urn:dev:ops:air-quality-monitor",
   "security": "nosec_sc",
   "securityDefinitions": {
