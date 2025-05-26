@@ -1,3 +1,4 @@
+// Atualização do Express para enviar os limites como JSON (input)
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -20,6 +21,8 @@ const lastReadings = {
     thresholds: null
 };
 
+const sensorHistory = [];
+
 const servient = new Servient();
 servient.addClientFactory(new MqttClientFactory());
 
@@ -34,7 +37,7 @@ servient.start().then(WoT => {
                 try {
                     const payload = await data.value();
                     lastReadings[prop] = typeof payload.value === "number" ? payload.value : null;
-                    console.log(`[OBSERVED] ${prop}:`, lastReadings[prop]);
+                    logSensorSnapshot();
                 } catch (err) {
                     console.error(`[ERROR] Failed to read ${prop}:`, err);
                 }
@@ -46,7 +49,6 @@ servient.start().then(WoT => {
                 try {
                     const payload = await data.value();
                     lastReadings[prop] = typeof payload.state === "string" ? payload.state : null;
-                    console.log(`[OBSERVED] ${prop} state:`, lastReadings[prop]);
                 } catch (err) {
                     console.error(`[ERROR] Failed to read ${prop}:`, err);
                 }
@@ -57,7 +59,6 @@ servient.start().then(WoT => {
             try {
                 const states = await data.value();
                 lastReadings.ledStates = states;
-                console.log("[OBSERVED] ledStates:", states);
             } catch (err) {
                 console.error("[ERROR] Failed to read ledStates:", err);
             }
@@ -67,13 +68,23 @@ servient.start().then(WoT => {
             try {
                 const values = await data.value();
                 lastReadings.thresholds = values;
-                console.log("[OBSERVED] thresholds:", values);
             } catch (err) {
                 console.error("[ERROR] Failed to read thresholds:", err);
             }
         });
     });
 });
+
+function logSensorSnapshot() {
+    const snapshot = {
+        timestamp: new Date().toISOString(),
+        temperature: lastReadings.temperature,
+        humidity: lastReadings.humidity,
+        co2: lastReadings.co2,
+        noise: lastReadings.noise
+    };
+    sensorHistory.push(snapshot);
+}
 
 app.get("/:property", (req, res) => {
     const prop = req.params.property;
@@ -82,6 +93,10 @@ app.get("/:property", (req, res) => {
     } else {
         res.status(404).json({ error: "Property not found" });
     }
+});
+
+app.get("/history", (req, res) => {
+    res.json(sensorHistory);
 });
 
 app.post("/:actuator", (req, res) => {
@@ -109,6 +124,7 @@ app.post("/:actuator", (req, res) => {
         });
 });
 
+// Atualizado: enviar valor como JSON no payload (compatível com "input")
 app.post("/thresholds/:param", (req, res) => {
     const param = req.params.param;
     const { value } = req.body;
@@ -128,7 +144,7 @@ app.post("/thresholds/:param", (req, res) => {
         return res.status(400).json({ error: "Value must be a number" });
     }
 
-    thing.invokeAction(actionMap[param], {}, { uriVariables: { value } })
+    thing.invokeAction(actionMap[param], { value })
         .then(() => {
             console.log(`[ACTION] Updated ${param} threshold to ${value}`);
             res.json({ status: "OK", parameter: param, value });

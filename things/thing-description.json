@@ -264,35 +264,33 @@
     },
     "setTemperatureLimit": {
       "title": "Set Temperature Alarm Threshold",
-      "uriVariables": {
-        "value": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 100
+      "input": {
+        "type": "object",
+        "properties": {
+          "value": { "type": "number" }
         }
       },
-      "forms": [
-        {
-          "href": "mqtt://localhost:1883/config/threshold/temperature?value={value}",
-          "op": [
-            "invokeaction"
-          ],
-          "contentType": "application/json"
-        }
-      ]
+      "forms": [{
+        "href": "mqtt://localhost:1883/config/threshold/temperature",
+        "op": ["invokeaction"],
+        "contentType": "application/json"
+      }]
     },
     "setHumidityLimit": {
       "title": "Set Humidity Alarm Threshold",
-      "uriVariables": {
-        "value": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 100
+      "input": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }
         }
       },
       "forms": [
         {
-          "href": "mqtt://localhost:1883/config/threshold/humidity?value={value}",
+          "href": "mqtt://localhost:1883/config/threshold/humidity",
           "op": [
             "invokeaction"
           ],
@@ -301,17 +299,20 @@
       ]
     },
     "setCo2Limit": {
-      "title": "Set CO₂ Alarm Threshold",
-      "uriVariables": {
-        "value": {
-          "type": "number",
-          "minimum": 300,
-          "maximum": 5000
+      "title": "Set CO\u2082 Alarm Threshold",
+      "input": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": 300,
+            "maximum": 5000
+          }
         }
       },
       "forms": [
         {
-          "href": "mqtt://localhost:1883/config/threshold/co2?value={value}",
+          "href": "mqtt://localhost:1883/config/threshold/co2",
           "op": [
             "invokeaction"
           ],
@@ -321,16 +322,19 @@
     },
     "setNoiseLimit": {
       "title": "Set Noise Alarm Threshold",
-      "uriVariables": {
-        "value": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 150
+      "input": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 150
+          }
         }
       },
       "forms": [
         {
-          "href": "mqtt://localhost:1883/config/threshold/noise?value={value}",
+          "href": "mqtt://localhost:1883/config/threshold/noise",
           "op": [
             "invokeaction"
           ],
