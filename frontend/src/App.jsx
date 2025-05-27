@@ -7,24 +7,33 @@ import Thresholds from './Thresholds';
 import ActuatorStates from './ActuatorStates';
 import ThresholdEditor from './ThresholdEditor';
 import ActuatorControl from './ActuatorControl';
+import HistoryPage from './HistoryPage';
+import { Routes, Route } from 'react-router-dom';
 
 
 
 
+function HomePage() {
+  return (
+    <main className="flex-grow flex flex-col items-center gap-6 p-6 overflow-y-auto">
+      <SensorData />
+      <LedStates />
+      <Thresholds />
+      <ThresholdEditor />
+      <ActuatorStates />
+      <ActuatorControl />
+    </main>
+  );
+}
 
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-grow flex flex-col items-center gap-6 p-6 overflow-y-auto">
-        <SensorData />
-        <LedStates />
-        <Thresholds />
-        <ActuatorStates />
-        <ThresholdEditor />
-        <ActuatorControl />
-
-      </main>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/history" element={<HistoryPage />} />
+      </Routes>
       <Footer />
     </div>
   );

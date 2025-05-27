@@ -166,3 +166,11 @@ Open: [http://localhost:5173](http://localhost:5173)
 - Sends `{"state": "ON"}` or `{"state": "OFF"}`
 - Updates visual state in real-time
 - Modular component: `ActuatorControl.jsx`
+
+### 📄 History Page (`/history`)
+
+- Uses `GET /history`
+- Displays a full table of sensor values stored in MongoDB
+- Columns: timestamp, temperature, humidity, CO₂, noise
+- Uses its own route with React Router (`/history`)
+- Navigation handled via `Header.jsx` using `react-router-dom`
