@@ -5,6 +5,10 @@ import SensorData from './SensorData';
 import LedStates from './LedStates';
 import Thresholds from './Thresholds';
 import ActuatorStates from './ActuatorStates';
+import ThresholdEditor from './ThresholdEditor';
+import ActuatorControl from './ActuatorControl';
+
+
 
 
 
@@ -17,6 +21,9 @@ function App() {
         <LedStates />
         <Thresholds />
         <ActuatorStates />
+        <ThresholdEditor />
+        <ActuatorControl />
+
       </main>
       <Footer />
     </div>

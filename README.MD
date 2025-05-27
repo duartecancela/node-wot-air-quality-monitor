@@ -113,13 +113,17 @@ GET /history
 - Live sensor values (auto-refresh)
 - LED state indicators (per parameter)
 - Threshold max values display
+- Threshold edit inputs
 - Actuator states display (fan/buzzer)
+- Actuator ON/OFF control buttons
 - Tailwind-based responsive layout
 - Modular components:
   - `SensorData.jsx`
   - `LedStates.jsx`
   - `Thresholds.jsx`
+  - `ThresholdEditor.jsx`
   - `ActuatorStates.jsx`
+  - `ActuatorControl.jsx`
   - `Header.jsx`, `Footer.jsx`
 
 ### 📦 Setup
@@ -144,8 +148,21 @@ Open: [http://localhost:5173](http://localhost:5173)
 - Displays current limit for each sensor
 - Updated every 5 seconds
 
+### ✏️ Threshold Editor
+
+- Sends new limits via `POST /thresholds/:parameter`
+- Inputs per sensor, updated manually
+
 ### 🔘 Actuator States
 
 - Uses `/fan` and `/buzzer`
 - Displays ON/OFF for each actuator
 - Updated every 5 seconds
+
+### 🎛️ Actuator Control (ON/OFF)
+
+- Uses `POST /fan` and `POST /buzzer`
+- Two buttons per actuator: ON and OFF
+- Sends `{"state": "ON"}` or `{"state": "OFF"}`
+- Updates visual state in real-time
+- Modular component: `ActuatorControl.jsx`
