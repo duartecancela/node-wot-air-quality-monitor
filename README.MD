@@ -174,3 +174,19 @@ Open: [http://localhost:5173](http://localhost:5173)
 - Columns: timestamp, temperature, humidity, CO₂, noise
 - Uses its own route with React Router (`/history`)
 - Navigation handled via `Header.jsx` using `react-router-dom`
+
+### 🗃️ MongoDB CRUD (Sensor History)
+
+* Full history of sensor records stored in MongoDB is displayed in the `/history` page
+* Available actions per record:
+
+  * ✏️ **Edit**: update temperature, humidity, CO₂ or noise values
+  * 🗑️ **Delete**: remove the record from the database
+* Each row shows the MongoDB `_id` and a human-readable `timestamp` (read-only)
+* Data is sorted by most recent first (based on `timestamp`)
+* Visual feedback is shown after successful edits and deletions using temporary success messages
+* All operations use RESTful endpoints:
+
+  * `PUT /history/:id`
+  * `DELETE /history/:id`
+

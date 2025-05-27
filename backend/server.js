@@ -138,10 +138,17 @@ servient.start().then(WoT => {
     });
 });
 
-// Return all stored sensor readings
-app.get("/history", (req, res) => {
-    res.json(sensorHistory);
+// Return all readings stored in MongoDB, ordered by most recent
+app.get("/history", async (req, res) => {
+    try {
+        const data = await mongoCollection.find().sort({ timestamp: -1 }).toArray();
+        res.json(data);
+    } catch (err) {
+        console.error("Failed to fetch history from MongoDB:", err);
+        res.status(500).json({ error: "Failed to fetch history" });
+    }
 });
+
 
 // Return the latest reading of a given property
 app.get("/:property", (req, res) => {
@@ -271,22 +278,22 @@ app.listen(PORT, () => {
 });
 
 // Graceful shutdown: clear database on server exit (for testing)
-function cleanupAndExit() {
-    if (mongoCollection) {
-        mongoCollection.deleteMany({})
-            .then(() => {
-                console.log("✅ Cleared MongoDB collection before exit");
-                process.exit(0);
-            })
-            .catch(err => {
-                console.error("❌ Failed to clear collection on exit:", err);
-                process.exit(1);
-            });
-    } else {
-        process.exit(0);
-    }
-}
+// function cleanupAndExit() {
+//     if (mongoCollection) {
+//         mongoCollection.deleteMany({})
+//             .then(() => {
+//                 console.log("✅ Cleared MongoDB collection before exit");
+//                 process.exit(0);
+//             })
+//             .catch(err => {
+//                 console.error("❌ Failed to clear collection on exit:", err);
+//                 process.exit(1);
+//             });
+//     } else {
+//         process.exit(0);
+//     }
+// }
 
 // Catch CTRL+C or termination signals
-process.on("SIGINT", cleanupAndExit);
-process.on("SIGTERM", cleanupAndExit);
+// process.on("SIGINT", cleanupAndExit);
+// process.on("SIGTERM", cleanupAndExit);
