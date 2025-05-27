@@ -3,6 +3,10 @@ import Header from './Header';
 import Footer from './Footer';
 import SensorData from './SensorData';
 import LedStates from './LedStates';
+import Thresholds from './Thresholds';
+import ActuatorStates from './ActuatorStates';
+
+
 
 function App() {
   return (
@@ -11,6 +15,8 @@ function App() {
       <main className="flex-grow flex flex-col items-center gap-6 p-6 overflow-y-auto">
         <SensorData />
         <LedStates />
+        <Thresholds />
+        <ActuatorStates />
       </main>
       <Footer />
     </div>

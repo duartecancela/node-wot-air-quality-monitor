@@ -7,229 +7,145 @@ A Web of Things (WoT) project to monitor air quality and control actuators using
 - **Express.js** API to expose sensor data and control actuators via HTTP
 - **Thing Description** includes sensors, thresholds, actuator commands and LED states
 - **Actuators (Fan, Buzzer)** controlled via MQTT actions
-- **Sensor data and thresholds** received via MQTT topics and stored in memory
+- **Sensor data and thresholds** received via MQTT topics and stored in MongoDB
 - **LED states** reflect threshold evaluation (GREEN or RED) per parameter
+- **React + Tailwind frontend** to view and control system
 
-## ✅ Current Features
+## ✅ Features
 
-- Full MQTT integration for:
-  - Sensors: temperature, humidity, CO₂, noise
-  - Thresholds: configurable max values for each parameter
-  - Actuators: fan and buzzer (state + control)
-  - LED states: per parameter (temperature, humidity, co2, noise)
-- Thing Description (`thing-description.json`) modeled according to W3C WoT using `input` with JSON payloads
-- Express API server (`server.js`) with WoT integration and in-memory history
-- ESP32 Python simulator fully compatible with WoT `input` actions
-- `tests_full.js` to validate all actions via Node-WoT programmatically
+- Sensors: temperature, humidity, CO₂, noise
+- Actuators: fan and buzzer (GET/POST)
+- Thresholds: max values for each parameter (GET/POST)
+- LED state visualisation
+- MongoDB integration (persist full sensor sets)
+- API Express server (REST interface)
+- React frontend using Vite + Tailwind CSS
+- ESP32 simulator (Python + MQTT)
 
 ## 📁 Folder Structure
 
 ```
 node-wot-air-quality-monitor/
-├── backend/
-│   ├── server.js                 # Express API with WoT integration
-│   ├── tests_full.js             # Node-WoT actions test runner
+├── backend/                   # Express + WoT Servient
+│   ├── server.js
+│   ├── tests_full.js
 │   └── package.json
-├── frontend/                     # React frontend (to be developed)
-│   ├── public/
+├── frontend/                  # React frontend (Vite + Tailwind)
 │   ├── src/
 │   └── package.json
 ├── things/
-│   └── thing-description.json    # WoT Thing Description file
-├── esp32_simulator.py            # Python-based MQTT simulator for ESP32
+│   └── thing-description.json
+├── simulator/
+│   ├── esp32_sim.py
+│   └── run_simulator.bat
 ├── .gitignore
 ├── README.md
 ```
 
 ## 🔧 How to Run
 
-1. Install backend dependencies:
-   ```bash
-   cd backend
-   npm install express body-parser @node-wot/core @node-wot/binding-mqtt
-   ```
-
-2. Start your MQTT broker (e.g. Mosquitto):
-   ```bash
-   mosquitto
-   ```
-
-3. Run the ESP32 simulator:
-   ```bash
-   python esp32_simulator.py
-   ```
-
-4. Run the Express API server:
-   ```bash
-   node backend/server.js
-   ```
-
-5. (Optional) Run test script to trigger actions:
-   ```bash
-   node backend/tests_full.js
-   ```
-
-## 🔍 Test the Express API
-
-### Read sensor data:
+### Backend
 ```bash
-curl http://localhost:3000/temperature
-curl http://localhost:3000/humidity
-curl http://localhost:3000/co2
-curl http://localhost:3000/noise
+cd backend
+npm install
+node server.js
 ```
 
-### Get actuator states:
+### Frontend
 ```bash
-curl http://localhost:3000/fan
-curl http://localhost:3000/buzzer
+cd frontend
+npm install
+npm run dev
 ```
 
-### Get LED states and thresholds:
+### MQTT Broker (if needed)
 ```bash
-curl http://localhost:3000/ledStates
-curl http://localhost:3000/thresholds
+mosquitto
 ```
 
-### Control actuators:
+### ESP32 Simulator
 ```bash
-curl -X POST http://localhost:3000/fan -H "Content-Type: application/json" -d '{"state":"ON"}'
-curl -X POST http://localhost:3000/buzzer -H "Content-Type: application/json" -d '{"state":"OFF"}'
+cd simulator
+run_simulator.bat
 ```
 
-### Update parameter thresholds:
-```bash
-curl -X POST http://localhost:3000/thresholds/temperature -H "Content-Type: application/json" -d '{"value":29.5}'
-curl -X POST http://localhost:3000/thresholds/humidity -H "Content-Type: application/json" -d '{"value":55}'
-curl -X POST http://localhost:3000/thresholds/co2 -H "Content-Type: application/json" -d '{"value":900}'
-curl -X POST http://localhost:3000/thresholds/noise -H "Content-Type: application/json" -d '{"value":80}'
+## 🔍 API Endpoints
+
+### Sensor values
+```
+GET /temperature
+GET /humidity
+GET /co2
+GET /noise
 ```
 
-### Get full sensor history (in-memory):
-```bash
-curl http://localhost:3000/history
+### Actuator states
+```
+GET /fan
+GET /buzzer
 ```
 
-## 🗺️ Next Steps
-
-- Add React frontend dashboard to view and control all data
-- Add MongoDB to persist sensor history
-- Add user authentication and security layer (optional)
-
-## 📝 License
-
-MIT
-
-## API Backend
-
-A API está localizada na pasta `backend/` e utiliza o Express.js. Os endpoints disponíveis atualmente são:
-
-### Endpoints
-
-- `GET /history`  
-  Retorna uma lista de dados recebidos dos sensores.  
-  **Exemplo de resposta:**
-  ```json
-  [
-    {
-      "timestamp": "2025-05-26T11:00:55.750Z",
-      "temperature": 36.48,
-      "humidity": 42.42,
-      "co2": 727,
-      "noise": 52
-    }
-  ]
-  ```
-
-- `POST /data`  
-  Endpoint utilizado para receber os dados publicados pelo simulador (ou pelo ESP32 real no futuro).  
-  Os dados devem estar no formato:
-  ```json
-  {
-    "temperature": 36.5,
-    "humidity": 42.4,
-    "co2": 727,
-    "noise": 52
-  }
-  ```
-
-## Simulador
-
-O ficheiro `backend/tests.js` simula um ESP32 que envia dados via HTTP POST para a API.  
-Pode ser usado com:
-```bash
-node backend/tests.js
+### Control actuators
+```
+POST /fan       { "state": "ON" }
+POST /buzzer    { "state": "OFF" }
 ```
 
-## Thing Description
-
-A descrição WoT encontra-se no ficheiro `things/thing-description.json`, compatível com o Node-WoT.
-
-## ESP32 Simulator
-
-A simulator for the ESP32 is available in the `simulator/` folder. It simulates sensor data and communicates with the system via MQTT.
-
-### Requirements
-- Python 3 installed
-- An MQTT broker running locally (e.g., Mosquitto)
-
-### How to run (Windows)
-Run the script:
-
-```bash
-simulator\run_simulator.bat
+### Thresholds
+```
+GET /thresholds
+POST /thresholds/:parameter
 ```
 
-This script will:
-- Create a virtual environment (`venv/`) if it does not already exist
-- Install the required `paho-mqtt` library
-- Launch the simulator (`esp32_sim.py`)
+### LED states
+```
+GET /ledStates
+```
 
-The simulator:
-- Publishes random sensor values for temperature, humidity, CO₂, and noise
-- Listens for actuator commands (fan and buzzer)
-- Updates LED status based on threshold values
-- Allows remote configuration of threshold values via MQTT topics
-
-## 🗄️ MongoDB Integration
-
-All valid sensor data received from the WoT-consumed Thing via MQTT is stored in a MongoDB collection called `readings`, located in the `air_data` database.
-
-Only full sets of sensor values (temperature, humidity, CO₂, and noise) are stored to ensure data consistency and avoid duplicates.
-
-For testing purposes, the database is automatically cleared each time the Express server is stopped (e.g., via CTRL+C). This ensures a clean state every time the server is restarted.
+### Sensor history
+```
+GET /history
+```
 
 ## 🖥️ Frontend (React + Vite + Tailwind CSS)
 
-The frontend is located in the `frontend/` folder and was created using [Vite](https://vitejs.dev/) with React and Tailwind CSS.
+### ✅ Implemented features:
+- Live sensor values (auto-refresh)
+- LED state indicators (per parameter)
+- Threshold max values display
+- Actuator states display (fan/buzzer)
+- Tailwind-based responsive layout
+- Modular components:
+  - `SensorData.jsx`
+  - `LedStates.jsx`
+  - `Thresholds.jsx`
+  - `ActuatorStates.jsx`
+  - `Header.jsx`, `Footer.jsx`
 
-### ✅ Features implemented so far:
-- Displays live sensor values: temperature, humidity, CO₂, and noise
-- Automatically updates sensor values every 5 seconds
-- Styled with Tailwind CSS
-- Modular components (`Header`, `Footer`, `SensorData`)
-- Fully connected to the Express backend via `fetch`
+### 📦 Setup
 
-### 📦 Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-1. Navigate to the frontend folder:
-   ```bash
-   cd frontend
-   ```
+Open: [http://localhost:5173](http://localhost:5173)
 
-2. Install frontend dependencies:
-   ```bash
-   npm install
-   ```
+### 📊 LED State Display
 
-3. Run the frontend development server:
-   ```bash
-   npm run dev
-   ```
+- Uses `/ledStates`
+- One circle per parameter: GREEN or RED
+- Updated every 5 seconds
 
-4. Open the browser:
-   ```
-   http://localhost:5173
-   ```
+### 🎚️ Threshold Max Values
 
-Make sure the backend is running on `http://localhost:3000` and CORS is enabled in the Express app.
+- Uses `/thresholds`
+- Displays current limit for each sensor
+- Updated every 5 seconds
+
+### 🔘 Actuator States
+
+- Uses `/fan` and `/buzzer`
+- Displays ON/OFF for each actuator
+- Updated every 5 seconds
