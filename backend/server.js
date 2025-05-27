@@ -5,9 +5,13 @@ const { Servient } = require("@node-wot/core");
 const MqttClientFactory = require("@node-wot/binding-mqtt").MqttClientFactory;
 const fs = require("fs");
 const { MongoClient } = require("mongodb"); // MongoDB module
+const cors = require('cors') 
 
 // Initialize Express app
 const app = express();
+
+app.use(cors()); 
+
 app.use(bodyParser.json());
 
 // Placeholder for the WoT Thing

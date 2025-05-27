@@ -2,8 +2,8 @@ import React from 'react';
 
 function Footer() {
   return (
-    <footer style={{ background: '#f0f0f0', padding: '1rem', textAlign: 'center', marginTop: '2rem' }}>
-      <h4>Footer</h4>
+    <footer className="bg-gray-100 text-gray-700 py-4 text-center mt-10 border-t">
+      <p className="text-sm">Footer</p>
     </footer>
   );
 }

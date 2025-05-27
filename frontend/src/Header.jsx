@@ -2,8 +2,8 @@ import React from 'react';
 
 function Header() {
   return (
-    <header style={{ background: '#f0f0f0', padding: '1rem', textAlign: 'center' }}>
-      <h2>Header</h2>
+    <header className="bg-blue-600 text-white py-4 text-center shadow-md">
+      <h1 className="text-2xl font-bold">Header</h1>
     </header>
   );
 }
