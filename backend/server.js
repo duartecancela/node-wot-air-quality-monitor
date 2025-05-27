@@ -210,6 +210,60 @@ app.post("/thresholds/:param", (req, res) => {
         });
 });
 
+
+// CRUD operations for MongoDB sensor history
+const { ObjectId } = require("mongodb");
+
+// Get one reading by ID
+app.get("/history/:id", async (req, res) => {
+    try {
+        const doc = await mongoCollection.findOne({ _id: new ObjectId(req.params.id) });
+        if (!doc) return res.status(404).json({ error: "Reading not found" });
+        res.json(doc);
+    } catch (err) {
+        res.status(400).json({ error: "Invalid ID format" });
+    }
+});
+
+// Update one reading
+app.put("/history/:id", async (req, res) => {
+    const { temperature, humidity, co2, noise } = req.body;
+    try {
+        const result = await mongoCollection.updateOne(
+            { _id: new ObjectId(req.params.id) },
+            { $set: { temperature, humidity, co2, noise } }
+        );
+        if (result.matchedCount === 0)
+            return res.status(404).json({ error: "Reading not found" });
+        res.json({ status: "Updated", id: req.params.id });
+    } catch (err) {
+        res.status(400).json({ error: "Invalid ID or update" });
+    }
+});
+
+// Delete one reading
+app.delete("/history/:id", async (req, res) => {
+    try {
+        const result = await mongoCollection.deleteOne({ _id: new ObjectId(req.params.id) });
+        if (result.deletedCount === 0)
+            return res.status(404).json({ error: "Reading not found" });
+        res.json({ status: "Deleted", id: req.params.id });
+    } catch (err) {
+        res.status(400).json({ error: "Invalid ID" });
+    }
+});
+
+// Delete all readings (use with caution!)
+app.delete("/history", async (req, res) => {
+    try {
+        const result = await mongoCollection.deleteMany({});
+        res.json({ status: "All readings deleted", count: result.deletedCount });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to delete all" });
+    }
+});
+
+
 // Start the Express server
 const PORT = 3000;
 app.listen(PORT, () => {
