@@ -198,3 +198,38 @@ All valid sensor data received from the WoT-consumed Thing via MQTT is stored in
 Only full sets of sensor values (temperature, humidity, CO₂, and noise) are stored to ensure data consistency and avoid duplicates.
 
 For testing purposes, the database is automatically cleared each time the Express server is stopped (e.g., via CTRL+C). This ensures a clean state every time the server is restarted.
+
+## 🖥️ Frontend (React + Vite + Tailwind CSS)
+
+The frontend is located in the `frontend/` folder and was created using [Vite](https://vitejs.dev/) with React and Tailwind CSS.
+
+### ✅ Features implemented so far:
+- Displays live sensor values: temperature, humidity, CO₂, and noise
+- Automatically updates sensor values every 5 seconds
+- Styled with Tailwind CSS
+- Modular components (`Header`, `Footer`, `SensorData`)
+- Fully connected to the Express backend via `fetch`
+
+### 📦 Frontend Setup
+
+1. Navigate to the frontend folder:
+   ```bash
+   cd frontend
+   ```
+
+2. Install frontend dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Run the frontend development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open the browser:
+   ```
+   http://localhost:5173
+   ```
+
+Make sure the backend is running on `http://localhost:3000` and CORS is enabled in the Express app.
