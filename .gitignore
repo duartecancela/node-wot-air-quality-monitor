@@ -19,4 +19,5 @@ frontend/package-lock.json
 
 # ESP32 Simulator env
 simulator/venv/
+simulator/.venv/
 
