@@ -45,42 +45,42 @@ led_states = {
 }
 
 def on_connect(client, userdata, flags, rc):
-    print("Connected to MQTT broker")
-    for param in thresholds:
-        topic = f"{threshold_topics_base}/{param}"
-        client.subscribe(topic)
-        print(f"Subscribed to topic: {topic}")
-    for topic in actuator_topics.values():
-        client.subscribe(topic)
-        print(f"Subscribed to topic: {topic}")
+    try:
+        print("Connected to MQTT broker")
+        for param in thresholds:
+            topic = f"{threshold_topics_base}/{param}"
+            client.subscribe(topic)
+            print(f"Subscribed to topic: {topic}")
+        for topic in actuator_topics.values():
+            client.subscribe(topic)
+            print(f"Subscribed to topic: {topic}")
+    except Exception as e:
+        print("[ERROR] Failed to process connection:", e)
+
+
 
 def on_message(client, userdata, msg):
-    global fan_state, buzzer_state, thresholds
-    print(f"[MQTT RECEIVED] {msg.topic} -> {msg.payload.decode()}")
-
     try:
-        data = json.loads(msg.payload.decode())
-        if msg.topic in actuator_topics.values():
-            state = data.get("state", "").upper()
-            if msg.topic == actuator_topics["fan"] and state in ["ON", "OFF"]:
-                fan_state = state
-                print(f"[ACTUATOR] Fan: {fan_state}")
-                client.publish(status_topics["fan"], json.dumps({"state": fan_state}))
-            elif msg.topic == actuator_topics["buzzer"] and state in ["ON", "OFF"]:
-                buzzer_state = state
-                print(f"[ACTUATOR] Buzzer: {buzzer_state}")
-                client.publish(status_topics["buzzer"], json.dumps({"state": buzzer_state}))
-        elif msg.topic.startswith("config/threshold/"):
-            param_name = msg.topic.split("/")[-1]
-            if param_name in thresholds and "value" in data:
-                thresholds[param_name] = float(data["value"])
-                print(f"[CONFIG] Set {param_name} threshold to {data['value']}")
-    except Exception as e:
-        print("[ERROR] Failed to process message:", e)
+        command = json.loads(msg.payload.decode())
+        state = command.get("state", "").upper()
 
-client = mqtt.Client(client_id="esp32-simulator", protocol=mqtt.MQTTv311)
-client.on_connect = on_connect
+        if msg.topic == actuator_topics["fan"] and state in ["ON", "OFF"]:
+            global fan_state
+            fan_state = state
+            client.manual_fan = True
+
+        elif msg.topic == actuator_topics["buzzer"] and state in ["ON", "OFF"]:
+            global buzzer_state
+            buzzer_state = state
+            client.manual_buzzer = True
+
+    except Exception as e:
+        print("Erro ao processar comando MQTT:", e)
+
+client = mqtt.Client(client_id="esp32-simulator")
 client.on_message = on_message
+client.on_connect = on_connect
+
 
 client.connect(mqtt_server, mqtt_port, 60)
 client.loop_start()
@@ -97,6 +97,13 @@ try:
         for key, value in sensor_data.items():
             led_states[key] = "RED" if value > thresholds[key] else "GREEN"
 
+
+        # Automatic actuator control only if not manually overridden
+        if not hasattr(client, 'manual_fan'):
+            fan_state = "ON" if sensor_data["co2"] > thresholds["co2"] else "OFF"
+        if not hasattr(client, 'manual_buzzer'):
+            buzzer_state = "ON" if sensor_data["co2"] > thresholds["co2"] else "OFF"
+    
         for key, topic in mqtt_topics.items():
             payload = json.dumps({"value": sensor_data[key]})
             client.publish(topic, payload)
