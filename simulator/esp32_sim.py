@@ -62,6 +62,19 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     try:
         command = json.loads(msg.payload.decode())
+
+        # Atualiza thresholds
+        if msg.topic.startswith(threshold_topics_base):
+            try:
+                param = msg.topic.split("/")[-1]
+                value = float(command.get("value", 0))
+                if param in thresholds:
+                    thresholds[param] = value
+                    print(f"[THRESHOLD UPDATED] {msg.topic} = {value}")
+            except Exception as err:
+                print("[ERROR] Threshold update failed:", err)
+
+        # Comandos dos atuadores
         state = command.get("state", "").upper()
 
         if msg.topic == actuator_topics["fan"] and state in ["ON", "OFF"]:
@@ -76,6 +89,7 @@ def on_message(client, userdata, msg):
 
     except Exception as e:
         print("Erro ao processar comando MQTT:", e)
+
 
 client = mqtt.Client(client_id="esp32-simulator")
 client.on_message = on_message
