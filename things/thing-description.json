@@ -14,7 +14,7 @@
   "properties": {
     "temperature": {
       "type": "object",
-      "description": "Current temperature in \u00b0C",
+      "description": "Current temperature in °C",
       "readOnly": true,
       "observable": true,
       "properties": {
@@ -29,9 +29,7 @@
           "op": [
             "observeproperty"
           ],
-          "mqv:controlPacketValue": 3,
-          "username": "esp32user",
-          "password": "password"
+          "mqv:controlPacketValue": 3
         }
       ]
     },
@@ -52,15 +50,13 @@
           "op": [
             "observeproperty"
           ],
-          "mqv:controlPacketValue": 3,
-          "username": "esp32user",
-          "password": "password"
+          "mqv:controlPacketValue": 3
         }
       ]
     },
     "co2": {
       "type": "object",
-      "description": "CO\u2082 level in ppm",
+      "description": "CO₂ level in ppm",
       "readOnly": true,
       "observable": true,
       "properties": {
@@ -75,9 +71,7 @@
           "op": [
             "observeproperty"
           ],
-          "mqv:controlPacketValue": 3,
-          "username": "esp32user",
-          "password": "password"
+          "mqv:controlPacketValue": 3
         }
       ]
     },
@@ -98,9 +92,7 @@
           "op": [
             "observeproperty"
           ],
-          "mqv:controlPacketValue": 3,
-          "username": "esp32user",
-          "password": "password"
+          "mqv:controlPacketValue": 3
         }
       ]
     },
@@ -121,9 +113,7 @@
           "op": [
             "observeproperty"
           ],
-          "mqv:controlPacketValue": 3,
-          "username": "esp32user",
-          "password": "password"
+          "mqv:controlPacketValue": 3
         }
       ]
     },
@@ -144,9 +134,7 @@
           "op": [
             "observeproperty"
           ],
-          "mqv:controlPacketValue": 3,
-          "username": "esp32user",
-          "password": "password"
+          "mqv:controlPacketValue": 3
         }
       ]
     },
@@ -191,9 +179,7 @@
           "op": [
             "observeproperty"
           ],
-          "contentType": "application/json",
-          "username": "esp32user",
-          "password": "password"
+          "contentType": "application/json"
         }
       ]
     },
@@ -221,9 +207,7 @@
           "op": [
             "observeproperty"
           ],
-          "contentType": "application/json",
-          "username": "esp32user",
-          "password": "password"
+          "contentType": "application/json"
         }
       ]
     }
@@ -250,9 +234,7 @@
           "op": [
             "invokeaction"
           ],
-          "mqv:controlPacketValue": 2,
-          "username": "esp32user",
-          "password": "password"
+          "mqv:controlPacketValue": 2
         }
       ]
     },
@@ -277,9 +259,7 @@
           "op": [
             "invokeaction"
           ],
-          "mqv:controlPacketValue": 2,
-          "username": "esp32user",
-          "password": "password"
+          "mqv:controlPacketValue": 2
         }
       ]
     },
@@ -299,9 +279,7 @@
           "op": [
             "invokeaction"
           ],
-          "contentType": "application/json",
-          "username": "esp32user",
-          "password": "password"
+          "contentType": "application/json"
         }
       ]
     },
@@ -323,14 +301,12 @@
           "op": [
             "invokeaction"
           ],
-          "contentType": "application/json",
-          "username": "esp32user",
-          "password": "password"
+          "contentType": "application/json"
         }
       ]
     },
     "setCo2Limit": {
-      "title": "Set CO\u2082 Alarm Threshold",
+      "title": "Set CO₂ Alarm Threshold",
       "input": {
         "type": "object",
         "properties": {
@@ -347,9 +323,7 @@
           "op": [
             "invokeaction"
           ],
-          "contentType": "application/json",
-          "username": "esp32user",
-          "password": "password"
+          "contentType": "application/json"
         }
       ]
     },
@@ -371,9 +345,7 @@
           "op": [
             "invokeaction"
           ],
-          "contentType": "application/json",
-          "username": "esp32user",
-          "password": "password"
+          "contentType": "application/json"
         }
       ]
     }
