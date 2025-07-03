@@ -4,16 +4,17 @@
   ],
   "title": "AirQualityMonitor",
   "id": "urn:dev:ops:air-quality-monitor",
-  "security": "nosec_sc",
+  "security": "basic_sc",
   "securityDefinitions": {
-    "nosec_sc": {
-      "scheme": "nosec"
+    "basic_sc": {
+      "scheme": "basic",
+      "in": "message"
     }
   },
   "properties": {
     "temperature": {
       "type": "object",
-      "description": "Current temperature in °C",
+      "description": "Current temperature in \u00b0C",
       "readOnly": true,
       "observable": true,
       "properties": {
@@ -28,7 +29,9 @@
           "op": [
             "observeproperty"
           ],
-          "mqv:controlPacketValue": 3
+          "mqv:controlPacketValue": 3,
+          "username": "esp32user",
+          "password": "password"
         }
       ]
     },
@@ -49,13 +52,15 @@
           "op": [
             "observeproperty"
           ],
-          "mqv:controlPacketValue": 3
+          "mqv:controlPacketValue": 3,
+          "username": "esp32user",
+          "password": "password"
         }
       ]
     },
     "co2": {
       "type": "object",
-      "description": "CO₂ level in ppm",
+      "description": "CO\u2082 level in ppm",
       "readOnly": true,
       "observable": true,
       "properties": {
@@ -70,7 +75,9 @@
           "op": [
             "observeproperty"
           ],
-          "mqv:controlPacketValue": 3
+          "mqv:controlPacketValue": 3,
+          "username": "esp32user",
+          "password": "password"
         }
       ]
     },
@@ -91,7 +98,9 @@
           "op": [
             "observeproperty"
           ],
-          "mqv:controlPacketValue": 3
+          "mqv:controlPacketValue": 3,
+          "username": "esp32user",
+          "password": "password"
         }
       ]
     },
@@ -112,7 +121,9 @@
           "op": [
             "observeproperty"
           ],
-          "mqv:controlPacketValue": 3
+          "mqv:controlPacketValue": 3,
+          "username": "esp32user",
+          "password": "password"
         }
       ]
     },
@@ -133,7 +144,9 @@
           "op": [
             "observeproperty"
           ],
-          "mqv:controlPacketValue": 3
+          "mqv:controlPacketValue": 3,
+          "username": "esp32user",
+          "password": "password"
         }
       ]
     },
@@ -178,7 +191,9 @@
           "op": [
             "observeproperty"
           ],
-          "contentType": "application/json"
+          "contentType": "application/json",
+          "username": "esp32user",
+          "password": "password"
         }
       ]
     },
@@ -206,7 +221,9 @@
           "op": [
             "observeproperty"
           ],
-          "contentType": "application/json"
+          "contentType": "application/json",
+          "username": "esp32user",
+          "password": "password"
         }
       ]
     }
@@ -233,7 +250,9 @@
           "op": [
             "invokeaction"
           ],
-          "mqv:controlPacketValue": 2
+          "mqv:controlPacketValue": 2,
+          "username": "esp32user",
+          "password": "password"
         }
       ]
     },
@@ -258,7 +277,9 @@
           "op": [
             "invokeaction"
           ],
-          "mqv:controlPacketValue": 2
+          "mqv:controlPacketValue": 2,
+          "username": "esp32user",
+          "password": "password"
         }
       ]
     },
@@ -267,14 +288,22 @@
       "input": {
         "type": "object",
         "properties": {
-          "value": { "type": "number" }
+          "value": {
+            "type": "number"
+          }
         }
       },
-      "forms": [{
-        "href": "mqtt://localhost:1883/config/threshold/temperature",
-        "op": ["invokeaction"],
-        "contentType": "application/json"
-      }]
+      "forms": [
+        {
+          "href": "mqtt://localhost:1883/config/threshold/temperature",
+          "op": [
+            "invokeaction"
+          ],
+          "contentType": "application/json",
+          "username": "esp32user",
+          "password": "password"
+        }
+      ]
     },
     "setHumidityLimit": {
       "title": "Set Humidity Alarm Threshold",
@@ -294,7 +323,9 @@
           "op": [
             "invokeaction"
           ],
-          "contentType": "application/json"
+          "contentType": "application/json",
+          "username": "esp32user",
+          "password": "password"
         }
       ]
     },
@@ -316,7 +347,9 @@
           "op": [
             "invokeaction"
           ],
-          "contentType": "application/json"
+          "contentType": "application/json",
+          "username": "esp32user",
+          "password": "password"
         }
       ]
     },
@@ -338,7 +371,9 @@
           "op": [
             "invokeaction"
           ],
-          "contentType": "application/json"
+          "contentType": "application/json",
+          "username": "esp32user",
+          "password": "password"
         }
       ]
     }

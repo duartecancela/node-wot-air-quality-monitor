@@ -48,8 +48,17 @@ MongoClient.connect(mongoUrl)
     .catch(err => console.error("MongoDB connection error:", err));
 
 // Setup WoT Servient with MQTT
+const mqttFactory = new MqttClientFactory();
 const servient = new Servient();
-servient.addClientFactory(new MqttClientFactory());
+servient.addClientFactory(mqttFactory);
+
+servient.addCredentials({
+  "urn:dev:ops:air-quality-monitor": {
+    username: "esp32user",
+    password: "password"
+  }
+});
+
 
 servient.start().then(WoT => {
     const td = JSON.parse(fs.readFileSync("../things/thing-description.json", "utf8"));
