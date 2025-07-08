@@ -92,6 +92,7 @@ def on_message(client, userdata, msg):
 
 
 client = mqtt.Client(client_id="esp32-simulator")
+client.username_pw_set("esp32user", "password") 
 client.on_message = on_message
 client.on_connect = on_connect
 
