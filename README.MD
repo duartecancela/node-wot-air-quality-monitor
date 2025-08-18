@@ -187,6 +187,9 @@ Open: [http://localhost:5173](http://localhost:5173)
 * Visual feedback is shown after successful edits and deletions using temporary success messages
 * All operations use RESTful endpoints:
 
+💡 The ESP32 code used in this project is available in [air_quality_monitor](https://github.com/duartecancela/air_quality_monitor).
+
+
   * `PUT /history/:id`
   * `DELETE /history/:id`
 
